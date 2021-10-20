@@ -76,7 +76,6 @@ typedef MemAddr* MemAddrRef;
 #define MCLK_PERIOD     (*((volatile uint32_t *) 0x40000040))  // Machine Clock Period Register
 #define VCLK_PERIOD     (*((volatile uint32_t *) 0x40000044))  // Video Clock Period Register
 
-//</my stuff>
 
 
 
@@ -84,10 +83,8 @@ typedef MemAddr* MemAddrRef;
 
 
 TStatus RVCInitialize(uint32_t *gp);
-
 TStatus RVCTickMS(uint32_t *tickmsref);
 TStatus RVCTickCount(TTickRef tickref);
-
 TStatus RVCThreadCreate(TThreadEntry entry, void *param, TMemorySize memsize, TThreadPriority prio, TThreadIDRef tid);
 TStatus RVCThreadDelete(TThreadID thread);
 TStatus RVCThreadActivate(TThreadID thread);
@@ -96,8 +93,8 @@ TStatus RVCThreadWait(TThreadID thread, TThreadReturnRef returnref);
 TStatus RVCThreadID(TThreadIDRef threadref);
 TStatus RVCThreadState(TThreadID thread, TThreadStateRef stateref);
 TStatus RVCThreadSleep(TTick tick);
-
 TStatus RVCWriteText(const TTextCharacter *buffer, TMemorySize writesize);
 TStatus RVCReadController(SControllerStatusRef statusref);
+
 
 #endif

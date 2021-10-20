@@ -6,8 +6,8 @@ _interrupt_handler:
     csrw    mscratch,ra
     csrr    ra,mcause
     addi    ra,ra,-11
-    bnez    ra,hardware_interrupt
-    csrr    ra,mscratch
+    bnez    ra,hardware_interrupt   # if it doesn't branch, this is an ECALL:
+    csrr    ra,mscratch             # read mscratch -> ra
     addi    sp,sp,-8
     sw      ra,4(sp)
     sw      gp,0(sp)

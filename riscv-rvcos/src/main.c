@@ -1,5 +1,7 @@
-#include <stdint.h>
+// #include <stdint.h>
 #include "RVCOS.h"
+#include <stdint.h>
+
 // #define MTIME_LOW       (*((volatile uint32_t *)0x40000008))
 // #define MTIME_HIGH      (*((volatile uint32_t *)0x4000000C))
 // #define MTIMECMP_LOW    (*((volatile uint32_t *)0x40000010))
@@ -64,69 +66,67 @@ void setNextTimeCmp(uint32_t interval){
 uint32_t c_syscall_handler(uint32_t p1,uint32_t p2,uint32_t p3,uint32_t p4,uint32_t p5,uint32_t code){
     csr_disable_interrupts();
 
+    TStatus status;
+
+    if(code == 0){
+        uint32_t* gp = p1;
+        status = RVCInitialize(gp);
+    }
+
+    if(code == 1){
+        status = RVCTickMS(((uint32_t*) p1));
+    }
+
+    if(code == 2){
+        status = RVCTickCount(((TTickRef) p1));
+    }
+
+    if(code == 3){
+        status = RVCThreadCreate(((TThreadEntry) p1), p2, p3, p4, p5);
+    }
+
+    if(code == 4){
+        status = RVCThreadDelete(((TThreadID) p1));
+    }
+
+    if(code == 5){
+        status = RVCThreadActivate(((TThreadID) p1));
+    }
+
+    if(code == 6){
+        status = RVCThreadTerminate(((TThreadID) p1), ((TThreadReturn) p2));
+    }
+
+    if(code == 7){
+        status = RVCThreadWait(((TThreadID) p1), ((TThreadReturnRef) p2));
+    }
+
+    if(code == 8){
+        status = RVCThreadID(((TThreadIDRef) p1));
+    }
+
+    if(code == 9){
+        status = RVCThreadState(((TThreadID) p1), ((TThreadStateRef) p2));
+    }
+
+    if(code == 10){
+        status = RVCThreadSleep(((TTick) p1));
+    }
+
+    
+
+    if(code == 11){
+        const TTextCharacter* buffer = ((TTextCharacterRef) p1);
+        status = RVCWriteText(buffer, ((TMemorySize) p2));
+    }
+
+    if(code == 12){
+        status = RVCReadController(((SControllerStatusRef) p1));
+    }
+
+
     csr_enable_interrupts();
-    return code + 1;
+    return status; //I think this does correctly pass-by value it?
+    return code + 1; //and I'm guessing that'll be what I actually should send rather than thiscode+1 return value
 }
 
-
-
-// #include <stdint.h>
-
-// volatile int global = 42;
-// volatile uint32_t controller_status = 0;
-
-// volatile char *VIDEO_MEMORY = (volatile char *)(0x50000000 + 0xFE800);
-// int main() {
-//     int a = 4;
-//     int b = 12;
-//     int last_global = 42;
-//     int x_pos = 12;
-
-//     VIDEO_MEMORY[0] = 'H';
-//     VIDEO_MEMORY[1] = 'e';
-//     VIDEO_MEMORY[2] = 'l';
-//     VIDEO_MEMORY[3] = 'l';
-//     VIDEO_MEMORY[4] = 'o';
-//     VIDEO_MEMORY[5] = ' ';
-//     VIDEO_MEMORY[6] = 'W';
-//     VIDEO_MEMORY[7] = 'o';
-//     VIDEO_MEMORY[8] = 'r';
-//     VIDEO_MEMORY[9] = 'l';
-//     VIDEO_MEMORY[10] = 'd';
-//     VIDEO_MEMORY[11] = '!';
-//     VIDEO_MEMORY[12] = 'X';
-
-
-//     while (1) {
-//         int c = a + b + global; //this does...nothing?
-        
-//         if(global != last_global){
-//             if(controller_status){
-//                 VIDEO_MEMORY[x_pos] = ' ';
-//                 if(controller_status & 0x1){
-//                     if(x_pos & 0x3F){
-//                         x_pos--;
-//                     }
-//                 }
-//                 if(controller_status & 0x2){
-//                     if(x_pos >= 0x40){
-//                         x_pos -= 0x40;
-//                     }
-//                 }
-//                 if(controller_status & 0x4){
-//                     if(x_pos < 0x8C0){
-//                         x_pos += 0x40;
-//                     }
-//                 }
-//                 if(controller_status & 0x8){
-//                     if((x_pos & 0x3F) != 0x3F){
-//                         x_pos++;
-//                     }
-//                 }
-//                 VIDEO_MEMORY[x_pos] = 'X';
-//             }
-//             last_global = global;
-//         }
-//     }
-//     return 0;
-// }

@@ -2,9 +2,9 @@
 #define RVCOS_C
 
 #include "RVCOS.h"
-#include <stddef.h>
-#include <stdint.h>
-#include <stdlib.h>
+// #include <stddef.h>
+// #include <stdint.h>
+// #include <stdlib.h>
 
 volatile extern MemAddr threadPC;
 
@@ -88,7 +88,7 @@ return RVCOS_STATUS_ ERROR_INVALID_STATE.
 */
 
 char* tohex(uint32_t uint){
-    char* hexstr = malloc(((size_t) 10));
+    char* hexstr = malloc(10);
     hexstr[0] = '0';
     hexstr[1] = 'x';
     const char translate_str[16] = "0123456789abcdef";
@@ -96,11 +96,22 @@ char* tohex(uint32_t uint){
         hexstr[2+i] = translate_str[uint % 16];
         uint /= 16;
     }
-
+    return hexstr;
 }
 
 TStatus RVCInitalize(uint32_t *gp){
     RVCWriteText(tohex(*gp), 10);
+    TStatus t;
+    return t;
+}
+
+
+
+TStatus RVCTickMS(uint32_t *tickmsref){
+    //todo
+}
+TStatus RVCTickCount(TTickRef tickref){
+    //todo
 }
 
 
@@ -121,7 +132,9 @@ RVCOS_STATUS_ERROR_INVALID_PARAMETER.
 
 */
 // typedef TThreadReturn (*TThreadEntry)(void *);
-TStatus RVCThreadCreate(TThreadEntry entry, void *param, TMemorySize memsize, TThreadPriority prio, TThreadIDRef tid);
+TStatus RVCThreadCreate(TThreadEntry entry, void *param, TMemorySize memsize, TThreadPriority prio, TThreadIDRef tid){
+//todo
+}
 
 
 
@@ -138,7 +151,9 @@ the RVCOS_THREAD_STATE_DEAD state, RVCOS_STATUS_ERROR_INVALID_STATE
 is returned.
 
 */
-TStatus RVCThreadDelete(TThreadID thread);
+TStatus RVCThreadDelete(TThreadID thread){
+    //todo
+}
 
 
 
@@ -160,7 +175,9 @@ is
 returned.
 
 */
-TStatus RVCThreadActivate(TThreadID thread);
+TStatus RVCThreadActivate(TThreadID thread){
+    //todo
+}
 
 
 
@@ -179,7 +196,9 @@ exist, RVCOS_STATUS_ERROR_INVALID_ID is returned. If the thread does exist but i
 newly created or dead states, RVCOS_THREAD_STATE_CREATED or RVCOS_THREAD_STATE_DEAD, RVCOS_STATUS_ERROR_INVALID_STATE is returned.
 
 */
-TStatus RVCThreadTerminate(TThreadID thread, TThreadReturn returnval);
+TStatus RVCThreadTerminate(TThreadID thread, TThreadReturn returnval){
+    //todo
+}
 
 
 
@@ -197,7 +216,9 @@ exist, RVCOS_STATUS_ERROR_INVALID_ID is returned. If the parameter returnref is 
 RVCOS_STATUS_ERROR_INVALID_PARAMETER is returned.
 
 */
-TStatus RVCThreadWait(TThreadID thread, TThreadReturnRef returnref);
+TStatus RVCThreadWait(TThreadID thread, TThreadReturnRef returnref){
+    //todo
+}
 
 
 
@@ -219,7 +240,9 @@ NULL,
 RVCOS_STATUS_ERROR_INVALID_PARAMETER is returned.
 
 */
-TStatus RVCThreadID(TThreadIDRef threadref);
+TStatus RVCThreadID(TThreadIDRef threadref){
+    //todo
+}
 
 
 
@@ -237,7 +260,9 @@ RVCOS_STATUS_ERROR_INVALID_PARAMETER is returned.
 
 */
 
-TStatus RVCThreadState(TThreadID thread, TThreadStateRef state);
+TStatus RVCThreadState(TThreadID thread, TThreadStateRef state){
+    //todo
+}
 
 
 
@@ -315,6 +340,9 @@ NULL,
 RVCOS_STATUS_ERROR_INVALID_PARAMETER is returned.
 
 */
+TStatus RVCReadController(SControllerStatusRef statusref){
+    //todo
+}
 
 
 #endif
