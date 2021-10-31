@@ -7,6 +7,7 @@ extern uint8_t _sdata[];
 extern uint8_t _esdata[];
 extern uint8_t _bss[];
 extern uint8_t _ebss[];
+extern uint8_t _heapbase[];
 
 // Adapted from https://stackoverflow.com/questions/58947716/how-to-interact-with-risc-v-csrs-by-using-gcc-c-code
 __attribute__((always_inline)) inline uint32_t csr_mstatus_read(void){
@@ -30,6 +31,19 @@ __attribute__((always_inline)) inline void csr_enable_interrupts(void){
 __attribute__((always_inline)) inline void csr_disable_interrupts(void){
     asm volatile ("csrci mstatus, 0x8");
 }
+uint32_t _sbrk(int incr) {
+  extern char _end;		/* Defined by the linker */
+  static char *heap_end;
+  char *prev_heap_end;
+ 
+  if (heap_end == 0) {
+    heap_end = &_end;
+  }
+  prev_heap_end = heap_end;
+  heap_end += incr;
+  return ((uint32_t) prev_heap_end);
+}
+
 
 #define MTIME_LOW       (*((volatile uint32_t *) 0x40000008)) //Ahh okay yeah these are pointers to memory locations
 #define MTIME_HIGH      (*((volatile uint32_t *) 0x4000000C)) // right goddamn that makes sense okay

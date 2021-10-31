@@ -1,7 +1,5 @@
-#ifndef RVCOS_C
-#define RVCOS_C
-
 #include "RVCOS.h"
+
 // #include <stddef.h>
 // #include <stdint.h>
 // #include <stdlib.h>
@@ -17,11 +15,14 @@ typedef struct{
     TStatus status;
     MemAddr textcursor;
     int32_t cursor_position;
+    TThreadID id;
 } ThreadControlBlock, TCB, *ThreadControlBlockRef, *TCBref;
 
 
 MemAddrRef sp; // set to mem locations of some
-MemAddrRef TCBs;
+int tcbcount;
+TCBref mainTCB;
+TCB TCBs[256];
 ThreadControlBlock myTCB;
 ThreadControlBlockRef runningTCB = &myTCB;
 
@@ -72,7 +73,7 @@ TStatus take_char(TTextCharacter ch){
         cursorCheck();
     }
 }
-
+TTextCharacter eeee[200];
 
 
 /*
@@ -88,30 +89,41 @@ return RVCOS_STATUS_ ERROR_INVALID_STATE.
 */
 
 char* tohex(uint32_t uint){
-    char* hexstr = malloc(10);
+    TTextCharacter* hexstr = eeee;
     hexstr[0] = '0';
     hexstr[1] = 'x';
-    const char translate_str[16] = "0123456789abcdef";
+    const TTextCharacter translate_str[16] = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
     for (int i = 0; i < 8; i++){
         hexstr[2+i] = translate_str[uint % 16];
-        uint /= 16;
+        // uint /= 16;x
     }
     return hexstr;
 }
 
-TStatus RVCInitalize(uint32_t *gp){
-    RVCWriteText(tohex(*gp), 10);
-    TStatus t;
-    return t;
+TStatus RVCInitialize(uint32_t *gp){
+    // RVCWriteText(tohex(*gp), 10);
+    TStatus t = RVCOS_STATUS_SUCCESS;
+    if (tcbcount != 0){
+        return RVCOS_STATUS_ERROR_INVALID_STATE;
+    } else {
+        mainTCB = &TCBs[0];
+        mainTCB->gp = *gp;
+        return t;
+
+    }
+
+
 }
 
 
 
 TStatus RVCTickMS(uint32_t *tickmsref){
     //todo
+    return RVCOS_STATUS_ERROR_INSUFFICIENT_RESOURCES;
 }
 TStatus RVCTickCount(TTickRef tickref){
     //todo
+    return RVCOS_STATUS_ERROR_INSUFFICIENT_RESOURCES;
 }
 
 
@@ -133,7 +145,10 @@ RVCOS_STATUS_ERROR_INVALID_PARAMETER.
 */
 // typedef TThreadReturn (*TThreadEntry)(void *);
 TStatus RVCThreadCreate(TThreadEntry entry, void *param, TMemorySize memsize, TThreadPriority prio, TThreadIDRef tid){
-//todo
+    TCBref newThread = malloc(7);
+    newThread->id = tcbcount;
+    tcbcount++;
+    return RVCOS_STATUS_ERROR_INSUFFICIENT_RESOURCES;
 }
 
 
@@ -152,7 +167,7 @@ is returned.
 
 */
 TStatus RVCThreadDelete(TThreadID thread){
-    //todo
+    return RVCOS_STATUS_ERROR_INVALID_ID;
 }
 
 
@@ -176,7 +191,7 @@ returned.
 
 */
 TStatus RVCThreadActivate(TThreadID thread){
-    //todo
+    return RVCOS_STATUS_ERROR_INSUFFICIENT_RESOURCES;
 }
 
 
@@ -197,7 +212,7 @@ newly created or dead states, RVCOS_THREAD_STATE_CREATED or RVCOS_THREAD_STATE_D
 
 */
 TStatus RVCThreadTerminate(TThreadID thread, TThreadReturn returnval){
-    //todo
+    return RVCOS_STATUS_ERROR_INSUFFICIENT_RESOURCES;
 }
 
 
@@ -217,7 +232,7 @@ RVCOS_STATUS_ERROR_INVALID_PARAMETER is returned.
 
 */
 TStatus RVCThreadWait(TThreadID thread, TThreadReturnRef returnref){
-    //todo
+    return RVCOS_STATUS_ERROR_INSUFFICIENT_RESOURCES;
 }
 
 
@@ -241,7 +256,7 @@ RVCOS_STATUS_ERROR_INVALID_PARAMETER is returned.
 
 */
 TStatus RVCThreadID(TThreadIDRef threadref){
-    //todo
+    return 1;
 }
 
 
@@ -262,6 +277,8 @@ RVCOS_STATUS_ERROR_INVALID_PARAMETER is returned.
 
 TStatus RVCThreadState(TThreadID thread, TThreadStateRef state){
     //todo
+    return RVCOS_STATUS_ERROR_INSUFFICIENT_RESOURCES;
+
 }
 
 
@@ -342,7 +359,6 @@ RVCOS_STATUS_ERROR_INVALID_PARAMETER is returned.
 */
 TStatus RVCReadController(SControllerStatusRef statusref){
     //todo
+    return RVCOS_STATUS_ERROR_INSUFFICIENT_RESOURCES;
 }
 
-
-#endif

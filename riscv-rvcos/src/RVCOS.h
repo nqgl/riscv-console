@@ -1,5 +1,3 @@
-#ifndef RVCOS_H
-#define RVCOS_H
 
 #include <stdint.h>
 #include <stddef.h>
@@ -95,6 +93,3 @@ TStatus RVCThreadState(TThreadID thread, TThreadStateRef stateref);
 TStatus RVCThreadSleep(TTick tick);
 TStatus RVCWriteText(const TTextCharacter *buffer, TMemorySize writesize);
 TStatus RVCReadController(SControllerStatusRef statusref);
-
-
-#endif

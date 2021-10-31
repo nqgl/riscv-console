@@ -20,7 +20,8 @@ void enter_cartridge(void);
 const TTextCharacter s[] = "stri\b\ng maybzz\rzz0000";
 int main() {
     saved_sp = &controller_status;
-    RVCWriteText(s, ((TMemorySize)17));
+    // RVCWriteText(s, ((TMemorySize)17));
+    RVCInitialize(saved_sp);
     while(1){
         if(CART_STAT_REG & 0x1){
             enter_cartridge();
@@ -65,9 +66,7 @@ void setNextTimeCmp(uint32_t interval){
 
 uint32_t c_syscall_handler(uint32_t p1,uint32_t p2,uint32_t p3,uint32_t p4,uint32_t p5,uint32_t code){
     csr_disable_interrupts();
-
     TStatus status;
-
     if(code == 0){
         uint32_t* gp = p1;
         status = RVCInitialize(gp);
