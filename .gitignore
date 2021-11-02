@@ -36,3 +36,4 @@ bin/
 
 # User preferences for VS code
 .vscode/
+riscv-rvcos.tgz
