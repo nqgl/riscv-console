@@ -88,6 +88,11 @@ return RVCOS_STATUS_ ERROR_INVALID_STATE.
 
 */
 
+ 
+// "helper" function:  tohex
+//  this was something I was working on in an effort to do some debugging
+// but the function doesn't work if I recall correctly. 
+// I don't know why i didn't just include something that has it
 char* tohex(uint32_t uint){
     TTextCharacter* hexstr = eeee;
     hexstr[0] = '0';

@@ -1,0 +1,13 @@
+it seems like there's a lot of info in this project 
+that we're going to want to keep track of
+and like design decisions/planning
++ one of many ways of communicating/coordinating with each other
+
+so, my current thought at an implementation of this is just  that we can put text files with information in here
+    maybe have a few subdirectories for planning/details/etc?
+        idk if it matters
+        but this isn't the best way of doing it clearly
+        so if you have any thoughts on a better way, let's do that
+and of course most info is probably best in comments where it's in context
+
+maybe even comments are sufficient on their own and a notes folder isn't necessary?

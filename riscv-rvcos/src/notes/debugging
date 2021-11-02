@@ -1,0 +1,13 @@
+I was initially just writing to the (emulated) console for debugging, just because I'd gotten the text mode working
+that's very much not ideal though of course, because that interferes with the running of any of the more complex programs that use the emulated screen
+so I was wanting to see if there's any way to just write to stdout or stderr or to a file, that seems like it would be really useful
+
+this is partly a note to myself so I remember this plan
+but also to you in case you know already
+
+and to discuss debugging here, want to get your thoughts about how much/what sort of debugging infrastructure should we set up?
+    
+
+tentative plan:
+    debug.c file with   
+        - print function that we can use to print to stdout/stderr for basic debugging
