@@ -32,13 +32,23 @@ LDFLAGS  += -Wl,--gc-sections -Wl,-T,$(LDFILE)
 
 TARGET_NAME = riscv-rvcos
 
-TARGET_OBJS =   $(OBJ_DIR)/RVCOS.o				\
-				$(OBJ_DIR)/main.o               \
+TARGET_OBJS =   $(OBJ_DIR)/main.o               \
+				$(OBJ_DIR)/startup.o				\
                 $(OBJ_DIR)/crt0.o               \
                 $(OBJ_DIR)/interrupt.o          \
-                $(OBJ_DIR)/startup.o			
+                $(OBJ_DIR)/scheduler.o			\
+                $(OBJ_DIR)/memory_manager.o			\
+                $(OBJ_DIR)/tcb.o			\
+                $(OBJ_DIR)/double_queue.o			\
+				$(OBJ_DIR)/debug.o				\
+				$(OBJ_DIR)/dynamic_list.o				\
+				$(OBJ_DIR)/mutex.o					\
+				$(OBJ_DIR)/RVCOS.o
+
 
 all: directories $(BIN_DIR)/$(TARGET_NAME)
+
+test: directories $(BIN_DIR)/$(TEST_NAME)
 
 $(BIN_DIR)/$(TARGET_NAME): $(TARGET_OBJS)
 	$(CC) $(TARGET_OBJS) -o $(BIN_DIR)/$(TARGET_NAME) $(CFLAGS) $(DEFINES) $(LDFLAGS) 
@@ -61,3 +71,4 @@ $(BIN_DIR):
 clean:
 	rm -rf $(OBJ_DIR)
 	rm -rf $(BIN_DIR)
+

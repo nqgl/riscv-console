@@ -1,7 +1,7 @@
-
+#pragma once
 #include <stdint.h>
-#include <stddef.h>
-#include <stdlib.h>
+
+
 
 
 #define RVCOS_STATUS_FAILURE                        ((TStatus)0x00)
@@ -10,21 +10,22 @@
 #define RVCOS_STATUS_ERROR_INVALID_ID               ((TStatus)0x03)
 #define RVCOS_STATUS_ERROR_INVALID_STATE            ((TStatus)0x04)
 #define RVCOS_STATUS_ERROR_INSUFFICIENT_RESOURCES   ((TStatus)0x05)
-
 #define RVCOS_THREAD_STATE_CREATED                  ((TThreadState)0x01)
 #define RVCOS_THREAD_STATE_DEAD                     ((TThreadState)0x02)
 #define RVCOS_THREAD_STATE_RUNNING                  ((TThreadState)0x03)
 #define RVCOS_THREAD_STATE_READY                    ((TThreadState)0x04)
 #define RVCOS_THREAD_STATE_WAITING                  ((TThreadState)0x05)
-
+#define RVCOS_THREAD_PRIORITY_IDLE                  ((TThreadPriority)0x00)
 #define RVCOS_THREAD_PRIORITY_LOW                   ((TThreadPriority)0x01)
 #define RVCOS_THREAD_PRIORITY_NORMAL                ((TThreadPriority)0x02)
 #define RVCOS_THREAD_PRIORITY_HIGH                  ((TThreadPriority)0x03)
 
 #define RVCOS_THREAD_ID_INVALID                     ((TThreadID)-1)
-
 #define RVCOS_TIMEOUT_INFINITE                      ((TTick)0)
 #define RVCOS_TIMEOUT_IMMEDIATE                     ((TTick)-1)
+#define RVCOS_MEMORY_POOL_ID_SYSTEM                 ((TMemoryPoolID)0)
+#define RVCOS_MEMORY_POOL_ID_INVALID                ((TMemoryPoolID)-1)
+#define RVCOS_MUTEX_ID_INVALID                      ((TMutexID)-1)
 
 typedef uint32_t TStatus, *TStatusRef;
 typedef uint32_t TTick, *TTickRef;
@@ -34,9 +35,9 @@ typedef uint32_t TThreadID, *TThreadIDRef;
 typedef uint32_t TThreadPriority, *TThreadPriorityRef;
 typedef uint32_t TThreadState, *TThreadStateRef;
 typedef char     TTextCharacter, *TTextCharacterRef;
-
+typedef uint32_t TMemoryPoolID, *TMemoryPoolIDRef;
+typedef uint32_t TMutexID, *TMutexIDRef;
 typedef TThreadReturn (*TThreadEntry)(void *);
-
 typedef struct{
     uint32_t DLeft:1;
     uint32_t DUp:1;
@@ -46,12 +47,32 @@ typedef struct{
     uint32_t DButton2:1;
     uint32_t DButton3:1;
     uint32_t DButton4:1;
-    uint32_t DReserved:28;
+    uint32_t DReserved:24;
 } SControllerStatus, *SControllerStatusRef;
+TStatus RVCInitialize(uint32_t *gp);
+TStatus RVCTickMS(uint32_t *tickmsref);
+TStatus RVCTickCount(TTickRef tickref);
+TStatus RVCThreadCreate(TThreadEntry entry, void *param, TMemorySize memsize, 
+TThreadPriority prio, TThreadIDRef tid);
+TStatus RVCThreadDelete(TThreadID thread);
+TStatus RVCThreadActivate(TThreadID thread);
+TStatus RVCThreadTerminate(TThreadID thread, TThreadReturn returnval);
+TStatus RVCThreadWait(TThreadID thread, TThreadReturnRef returnref, TTick timeout);
+TStatus RVCThreadID(TThreadIDRef threadref);
+TStatus RVCThreadState(TThreadID thread, TThreadStateRef stateref);
+TStatus RVCThreadSleep(TTick tick);
 
-//<my stuff>
-typedef volatile uint32_t* MemAddr;
-typedef MemAddr* MemAddrRef;
+
+TStatus RVCMutexCreate(TMutexIDRef mutexref);
+TStatus RVCMutexDelete(TMutexID mutex);
+TStatus RVCMutexQuery(TMutexID mutex, TThreadIDRef ownerref);
+TStatus RVCMutexAcquire(TMutexID mutex, TTick timeout);
+TStatus RVCMutexRelease(TMutexID mutex);
+TStatus RVCWriteText(const TTextCharacter *buffer, TMemorySize writesize);
+void RVCActuallyWriteText(const TTextCharacter *buffer, TMemorySize writesize);
+TStatus RVCReadController(SControllerStatusRef statusref);
+
+
 
 #define INTERRUPT_ENABLE_REG       (*((volatile uint32_t *) 0x40000000))
 #define INTERRUPT_PENDING_REG       (*((volatile uint32_t *) 0x40000004))
@@ -74,22 +95,3 @@ typedef MemAddr* MemAddrRef;
 #define MCLK_PERIOD     (*((volatile uint32_t *) 0x40000040))  // Machine Clock Period Register
 #define VCLK_PERIOD     (*((volatile uint32_t *) 0x40000044))  // Video Clock Period Register
 
-
-
-
-
-
-
-TStatus RVCInitialize(uint32_t *gp);
-TStatus RVCTickMS(uint32_t *tickmsref);
-TStatus RVCTickCount(TTickRef tickref);
-TStatus RVCThreadCreate(TThreadEntry entry, void *param, TMemorySize memsize, TThreadPriority prio, TThreadIDRef tid);
-TStatus RVCThreadDelete(TThreadID thread);
-TStatus RVCThreadActivate(TThreadID thread);
-TStatus RVCThreadTerminate(TThreadID thread, TThreadReturn returnval);
-TStatus RVCThreadWait(TThreadID thread, TThreadReturnRef returnref);
-TStatus RVCThreadID(TThreadIDRef threadref);
-TStatus RVCThreadState(TThreadID thread, TThreadStateRef stateref);
-TStatus RVCThreadSleep(TTick tick);
-TStatus RVCWriteText(const TTextCharacter *buffer, TMemorySize writesize);
-TStatus RVCReadController(SControllerStatusRef statusref);

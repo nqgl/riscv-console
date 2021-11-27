@@ -7,10 +7,13 @@
 #include "RISCVUTypeInstruction.h"
 #include "RISCVJTypeInstruction.h"
 #include "RISCVSYSTypeInstruction.h"
+#include <ostream>
 #include <sstream>
 #include <iomanip>
 #include <type_traits>
 #include <algorithm>
+#include "RAMMemoryDevice.h"
+#include <fstream>
 
 // Code form Effective Modern C++ by Scott Meyers (see Item 10)
 template<typename E>
@@ -126,6 +129,9 @@ CRISCVCPU::CRISCVCPU(std::shared_ptr< CMemoryDevice > memory, std::shared_ptr< C
     }
     std::sort(DControlStatusRegisterKeys.begin(),DControlStatusRegisterKeys.end());
 
+
+    writecount = 0;
+    outFile.open("pc_exec_log.txt", std::ios_base::app);
 }
 
 uint32_t CRISCVCPU::ProgramCounter() const{
@@ -182,6 +188,30 @@ void CRISCVCPU::InvokeTrap(uint32_t cause, bool interrupt){
 
 bool CRISCVCPU::ExecuteInstruction(){
     auto NextInstructionAddress = DProgramCounter->load();
+    
+    outFile << NextInstructionAddress 
+    << ":" << *DMachineStatusRegister
+    << ":" << *DMachineInterruptPendingRegister
+    << ":" << *DMachineInterruptEnableRegister
+    << ":" << *DMachineExceptionProgramCounterRegister
+    << ":" << *DMachineCauseRegister
+    << ":" << *DRegisters[1] //ra
+    << ":" << *DRegisters[2] //sp
+    << ":" << *DRegisters[3] //gp
+    << ":" << *DRegisters[4] //tp
+    << ":" << *DRegisters[8]   //s0/fp
+    << ":" << *DRegisters[9]    //s1/fp
+    << ":" << *DRegisters[10]   //a0
+    << ":" << *DRegisters[11]   //a1
+    << ":" << *DRegisters[12]   //a2
+    << ":" << *DRegisters[13]   //a3
+    << ":" << *DRegisters[14]   //a4
+    << ":" << *DRegisters[15]   //a5 
+    << "\n";
+    writecount += 1;
+    if (writecount % 1000 == 0){
+        outFile.flush();
+    }
     if(NextInstructionAddress & 0x3){
         // Instruction address misaligne cause 0
         InvokeTrap(0, false); 
@@ -235,8 +265,11 @@ void CRISCVCPU::ClearInterruptPending(EInterruptSource source){
     DMachineInterruptPendingRegister->fetch_and(~to_underlying(source));
 }
 
+void printstuff(){
+
+}
 std::shared_ptr< CRISCVCPU::CInstruction > CRISCVCPU::DecodeInstruction(uint32_t addr){
-    
+    printstuff();   
     return CInstruction::DecodeInstruction(addr,DMemory->LoadUINT32(addr),shared_from_this());
 }
 

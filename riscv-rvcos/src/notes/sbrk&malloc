@@ -1,0 +1,22 @@
+some notes on data segments from the .ld file
+
+trying to understand the linking script...
+    definitely not something I understand super well
+
+there are
+    _sdata
+    _esdata
+    _data
+    _edata
+these mean:
+begin of .data: _data
+end of .data: _edata
+likewise for sdata
+
+.sdata vs .data:
+    .sdata are small data?
+
+.bss:
+    stands for "block started by symbol" apparently
+        not sure yet why
+    

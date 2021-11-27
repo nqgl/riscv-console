@@ -13,6 +13,7 @@
 #include <condition_variable>
 #include <chrono>
 #include <set>
+#include <fstream>
 
 using CRISCVConsoleBreakpointCalldata = void *;
 using CRISCVConsoleBreakpointCallback = void (*)(CRISCVConsoleBreakpointCalldata);

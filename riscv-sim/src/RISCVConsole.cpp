@@ -223,6 +223,7 @@ void CRISCVConsole::ConstructInstructionStrings(CElfLoad &elffile, std::vector< 
             }
         }
     }
+    // the important part
 }
 
 void CRISCVConsole::ConstructFirmwareStrings(CElfLoad &elffile){
@@ -231,6 +232,9 @@ void CRISCVConsole::ConstructFirmwareStrings(CElfLoad &elffile){
     DFirmwareInstructionLabels.clear();
     DFirmwareInstructionLabelIndices.clear();
     ConstructInstructionStrings(elffile, DFirmwareInstructionStrings, DFirmwareAddressesToIndices, DFirmwareInstructionLabels, DFirmwareInstructionLabelIndices);
+    std::ofstream outFile("firmware_strings.txt");
+    for (const auto &e : DFirmwareInstructionStrings) outFile << e << "\n";
+
     DInstructionStrings = DFirmwareInstructionStrings;
     DInstructionStrings.insert(DInstructionStrings.end(), DCartridgeInstructionStrings.begin(),DCartridgeInstructionStrings.end());
     DInstructionAddressesToIndices = DFirmwareAddressesToIndices;
@@ -251,7 +255,10 @@ void CRISCVConsole::ConstructCartridgeStrings(CElfLoad &elffile){
     DCartridgeAddressesToIndices.clear();
     DCartridgeInstructionLabels.clear();
     DCartridgeInstructionLabelIndices.clear();
+
     ConstructInstructionStrings(elffile, DCartridgeInstructionStrings, DCartridgeAddressesToIndices, DCartridgeInstructionLabels, DCartridgeInstructionLabelIndices);
+    std::ofstream outFile("cart_strings.txt");
+    for (const auto &e : DCartridgeInstructionStrings) outFile << e << "\n";
     DInstructionStrings = DFirmwareInstructionStrings;
     DInstructionStrings.insert(DInstructionStrings.end(), DCartridgeInstructionStrings.begin(),DCartridgeInstructionStrings.end());
     DInstructionAddressesToIndices = DFirmwareAddressesToIndices;

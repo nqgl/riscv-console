@@ -7,6 +7,7 @@
 #include <cstdint>
 #include "HardwareRegister.h"
 #include "MemoryDevice.h"
+#include <fstream>
 
 class CRISCVCPU : public std::enable_shared_from_this<CRISCVCPU> {
     public:
@@ -69,7 +70,8 @@ class CRISCVCPU : public std::enable_shared_from_this<CRISCVCPU> {
         std::shared_ptr< CMemoryDevice > DMemory;
         std::shared_ptr< CInstructionCache > DInstructionCache;
         static const size_t DRegisterCount;
-
+        std::ofstream outFile;
+        int writecount;
         void CheckInterrupts();
         void InvokeTrap(uint32_t cause, bool interrupt);
 
